@@ -4,6 +4,7 @@ import actor.MyWebSocketActor
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.util.ByteString
 import com.google.inject.Singleton
 import javax.inject.Inject
 import play.api.libs.streams.ActorFlow
@@ -19,11 +20,11 @@ class WebsocketController @Inject()(cc: ControllerComponents, actorSystem: Actor
     }
   }
 
-  def socket2IgnoreInput = WebSocket.accept[String, String] { request =>
+  def socket2IgnoreInput = WebSocket.accept[ByteString, ByteString] { request =>
     // Log events to the console
-    val in = Sink.foreach[String](println)
+    val in = Sink.foreach[ByteString](println)
     // Send a single 'Hello!' message and then leave the socket open
-    val out = Source.single("Hello!").concat(Source.maybe)
+    val out = Source.single(ByteString("Hello!")).concat(Source.maybe)
 
     Flow.fromSinkAndSource(in, out)
   }
