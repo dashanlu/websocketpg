@@ -1,6 +1,6 @@
 package controllers
 
-import actor.{MyArrowDataWebSocketActor, MyWebSocketActor}
+import actor.{MyWebSocketActor, PersonArrowDataWebSocketActor}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
@@ -12,7 +12,6 @@ import play.api.mvc._
 
 @Singleton
 class WebsocketController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
-  val logger = play.api.Logger(getClass)
 
   def broadcast = WebSocket.accept[String, String] { request =>
     ActorFlow.actorRef { out =>
@@ -22,7 +21,7 @@ class WebsocketController @Inject()(cc: ControllerComponents, actorSystem: Actor
 
   def broadcast1 = WebSocket.accept[ByteString, ByteString] { request =>
     ActorFlow.actorRef { out =>
-      MyArrowDataWebSocketActor.props(out)
+      PersonArrowDataWebSocketActor.props(out)
     }
   }
 
